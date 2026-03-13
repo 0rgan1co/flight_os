@@ -449,50 +449,83 @@
     color: var(--yellow);
     opacity: 0.7;
   }
-  /* ── EXP SELECTOR ─────────────────────────────────── */
-  .exp-selector-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  /* ── EXP SELECTOR (legacy — oculto) ─────────────────────────────── */
+  .exp-selector-chips { display: none; }
+  .exp-chip           { display: none; }
+
+  /* ── KANBAN ─────────────────────────────────────────────────────── */
+  .kanban-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
     margin-bottom: 16px;
   }
-  .exp-chip {
+  @media (max-width: 640px) { .kanban-board { grid-template-columns: 1fr; } }
+  .kanban-col {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 120px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .kanban-col.drag-over { border-color: rgba(245,200,0,0.5); background: rgba(245,200,0,0.04); }
+  .kanban-col-header {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 6px 14px;
-    border-radius: 3px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: transparent;
-    color: var(--gray-light);
-    cursor: pointer;
-    transition: all 0.15s;
+    font-size: 9px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     display: flex;
     align-items: center;
-    gap: 7px;
-    text-align: left;
-    max-width: 280px;
+    gap: 6px;
   }
-  .exp-chip:hover { border-color: rgba(245,200,0,0.4); color: var(--white); }
-  .exp-chip.selected {
-    border-color: var(--yellow);
-    color: var(--yellow);
-    background: rgba(245,200,0,0.06);
+  .kanban-col-header .col-count {
+    margin-left: auto;
+    background: rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 1px 7px;
   }
-  .exp-chip.spc-done-stop    { border-color: rgba(230,57,70,0.5);  color: #E63946; }
-  .exp-chip.spc-done-pivot   { border-color: rgba(255,140,0,0.5);  color: #FF8C00; }
-  .exp-chip.spc-done-continue{ border-color: rgba(45,198,83,0.5);  color: #2DC653; }
-  .exp-chip .chip-icon { font-size: 12px; flex-shrink: 0; }
-  .exp-chip .chip-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .exp-chip .chip-opp {
+  .kanban-col[data-col="todo"] .kanban-col-header { color: var(--gray-light); }
+  .kanban-col[data-col="wip"]  .kanban-col-header { color: var(--yellow); }
+  .kanban-col[data-col="done"] .kanban-col-header { color: #2DC653; }
+  .kanban-cards { min-height: 40px; }
+  .kanban-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .kanban-card:hover  { border-color: rgba(245,200,0,0.3); background: rgba(255,255,255,0.05); }
+  .kanban-card.selected { border-color: var(--yellow); background: rgba(245,200,0,0.06); }
+  .kanban-card.dragging  { opacity: 0.35; }
+  .kanban-card[data-spc="stop"]     { border-left: 3px solid #E63946; }
+  .kanban-card[data-spc="pivot"]    { border-left: 3px solid #FF8C00; }
+  .kanban-card[data-spc="continue"] { border-left: 3px solid #2DC653; }
+  .kanban-card-text {
+    font-size: 11px;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 5px;
+  }
+  .kanban-card-meta {
+    font-family: 'DM Mono', monospace;
     font-size: 8px;
-    opacity: 0.6;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 220px;
+    color: var(--gray-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
+  .kanban-card-opp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
+  .kanban-card-spc { margin-left: auto; flex-shrink: 0; }
+  .kanban-card-spc.spc-stop     { color: #E63946; }
+  .kanban-card-spc.spc-pivot    { color: #FF8C00; }
+  .kanban-card-spc.spc-continue { color: #2DC653; }
 
   .exp-detail-panel {
     background: rgba(255,255,255,0.02);
@@ -3291,12 +3324,30 @@
       <div id="ritual-week-label" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--gray-light);"></div>
     </div>
 
-    <!-- ① EXPERIMENTOS SPC -->
+    <!-- ① EXPERIMENTOS — KANBAN SPC -->
     <div class="card" style="margin-bottom:16px;">
-      <div class="card-label" style="margin-bottom:12px;">Experimentos — Stop · Pivot · Continue</div>
-      <div id="ritual-experiments-list" class="exp-selector-chips">
-        <div class="exp-empty" style="width:100%;">Los experimentos de N3 aparecen acá automáticamente.</div>
+      <div class="card-label" style="margin-bottom:12px;">Experimentos — Kanban SPC</div>
+
+      <!-- KANBAN BOARD -->
+      <div class="kanban-board" id="kanban-board">
+        <div class="kanban-col" data-col="todo" id="kanban-todo"
+          ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event,'todo')">
+          <div class="kanban-col-header">◎ TO-DO <span class="col-count" id="cnt-todo">0</span></div>
+          <div class="kanban-cards" id="cards-todo"></div>
+        </div>
+        <div class="kanban-col" data-col="wip" id="kanban-wip"
+          ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event,'wip')">
+          <div class="kanban-col-header">▶ EN CURSO <span class="col-count" id="cnt-wip">0</span></div>
+          <div class="kanban-cards" id="cards-wip"></div>
+        </div>
+        <div class="kanban-col" data-col="done" id="kanban-done"
+          ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event,'done')">
+          <div class="kanban-col-header">✓ CERRADO <span class="col-count" id="cnt-done">0</span></div>
+          <div class="kanban-cards" id="cards-done"></div>
+        </div>
       </div>
+
+      <!-- DETALLE del experimento seleccionado -->
       <div id="ritual-exp-detail" class="exp-detail-panel">
         <div class="exp-detail-header">
           <div class="exp-detail-opp-tag" id="detail-opp-tag"></div>
@@ -3316,7 +3367,7 @@
               oninput="autosave()"></textarea>
           </div>
           <div class="exp-question-row highlight-q">
-            <label>DECISIÓN</label>
+            <label>DECISIÓN SPC</label>
             <div class="spc-row" id="detail-spc-row" style="margin-bottom:8px;"></div>
             <div class="spc-note" id="detail-spc-note">
               <textarea class="field exp-field" data-key="spc_nota" rows="2"
@@ -3634,10 +3685,10 @@
       document.querySelectorAll('#panel-ritual input[type="checkbox"]').forEach(cb => {
         if (cb.checked) checkboxes.push(cb.parentElement.textContent.trim());
       });
-      // Collect SPC decisions from rendered experiment cards
+      // Collect SPC decisions from kanban cards
       const spcDecisions = {};
-      document.querySelectorAll('.exp-chip[data-exp-id]').forEach(function(chip) {
-        const id = chip.dataset.expId;
+      document.querySelectorAll('.kanban-card[data-exp-id]').forEach(function(card) {
+        const id = card.dataset.expId;
         if (_ritualExpData[id]) spcDecisions[id] = _ritualExpData[id];
       });
       const ritual = {
@@ -3653,6 +3704,7 @@
         foco_3:          document.getElementById('ritual-foco-3')?.value          || '',
         nuevo_exp:       document.getElementById('ritual-nuevo-exp')?.value        || '',
         spc:             spcDecisions,
+        kanban:          _kanbanStatus,
         fecha:           new Date().toISOString()
       };
       if (section === 'ritual') return ritual;
@@ -3854,6 +3906,11 @@
       _ritualExpData = v.spc;
       window._pendingSpc = v.spc; // consumed in renderRitualExperiments
     }
+    // Kanban column positions
+    if (v.kanban) {
+      _kanbanStatus = v.kanban;
+      window._pendingKanban = v.kanban; // consumed in renderRitualExperiments
+    }
   }
 
   // ─── WEEK NUMBER ─────────────────────────────────────────────────────
@@ -3884,6 +3941,40 @@
     document.querySelectorAll('.flow-step').forEach(s => s.classList.remove('active-step'));
     const fpEl = document.getElementById(fpMap[id]);
     if (fpEl) fpEl.classList.add('active-step');
+
+    // ── AUTOMARK HEATMAP ────────────────────────────────────────────
+    // Si el panel es N1, N2 o N3 y hay un hábito con ese nombre, marcarlo hoy
+    var panelHabitMap = { n1: 'N1', n2: 'N2', n3: 'N3' };
+    var habitLabel = panelHabitMap[id];
+    if (habitLabel && _heatmapData && _heatmapData.habits) {
+      var today = (function() {
+        var d = new Date();
+        var y = d.getFullYear();
+        var m = String(d.getMonth()+1).padStart(2,'0');
+        var day = String(d.getDate()).padStart(2,'0');
+        return y + '-' + m + '-' + day;
+      })();
+      // Buscar hábito cuyo nombre contenga el label (N1, N2, N3) — case insensitive
+      var match = _heatmapData.habits.find(function(h) {
+        return h.name && h.name.toUpperCase().indexOf(habitLabel) !== -1;
+      });
+      if (match) {
+        if (!_heatmapData.days[today]) _heatmapData.days[today] = {};
+        if (!_heatmapData.days[today][match.id]) {
+          _heatmapData.days[today][match.id] = true;
+          if (typeof renderHeatmap === 'function') renderHeatmap();
+          if (typeof saveHeatmap   === 'function') saveHeatmap();
+          log('info', 'Heatmap automark: ' + match.name + ' → ' + today);
+        }
+      }
+    }
+
+    // Render ritual si corresponde
+    if (id === 'ritual') {
+      if (typeof renderHeatmap === 'function') renderHeatmap();
+      if (typeof renderRitualExperiments === 'function') renderRitualExperiments();
+      if (typeof updateRitualWeekLabel   === 'function') updateRitualWeekLabel();
+    }
   }
 
   // ─── TASK TOGGLE ─────────────────────────────────────────────────────
@@ -4862,10 +4953,22 @@
       hint: '¿Qué señal confirma que sigue valiendo la pena correrlo?' }
   ];
 
+  // ── KANBAN STATE ─────────────────────────────────────────────────
+  // kanbanStatus: { [expId]: 'todo' | 'wip' | 'done' }  (columna actual)
+  var _kanbanStatus = {};
+  var _draggingExpId = null;
+
+  function getKanbanCol(exp) {
+    // Columna inferida: si tiene spc_decision → 'done', si kanbanStatus lo movió → respetar eso
+    if (_kanbanStatus[exp.id]) return _kanbanStatus[exp.id];
+    const saved = _ritualExpData[exp.id] || {};
+    if (saved.spc_decision) return 'done';
+    return 'todo';
+  }
+
   function renderRitualExperiments() {
-    const chips   = document.getElementById('ritual-experiments-list');
-    const detail  = document.getElementById('ritual-exp-detail');
-    if (!chips || !detail) return;
+    const detail = document.getElementById('ritual-exp-detail');
+    if (!detail) return;
 
     // Recolectar todos los nodos 'experiment' del OST
     const experiments = [];
@@ -4886,37 +4989,45 @@
       _ritualExpData = window._pendingSpc;
       window._pendingSpc = null;
     }
+    // Restaurar kanban status si viene de Supabase
+    if (window._pendingKanban) {
+      _kanbanStatus = window._pendingKanban;
+      window._pendingKanban = null;
+    }
 
-    chips.innerHTML = '';
+    // Limpiar columnas
+    ['todo','wip','done'].forEach(function(col) {
+      var el = document.getElementById('cards-' + col);
+      if (el) el.innerHTML = '';
+    });
 
     if (!experiments.length) {
-      chips.innerHTML = '<div class="exp-empty" style="width:100%;">Los experimentos de N3 aparecen acá automáticamente.<br>Agregá en N3 → Oportunidad → + Experimento</div>';
+      var todoEl = document.getElementById('cards-todo');
+      if (todoEl) todoEl.innerHTML = '<div class="exp-empty">Los experimentos de N3 aparecen acá automáticamente.<br>Agregá en N3 → Oportunidad → + Experimento</div>';
       detail.classList.remove('visible');
+      updateKanbanCounts([],[],[]);
       return;
     }
 
-    // Construir chips
+    var cols = { todo: [], wip: [], done: [] };
     experiments.forEach(function(exp) {
-      const saved   = _ritualExpData[exp.id] || {};
-      const spc     = saved.spc_decision || '';
-      const spcClass = spc ? ' spc-done-' + spc : '';
-      const icon    = spc === 'stop' ? '⬛' : spc === 'pivot' ? '↻' : spc === 'continue' ? '→' : exp.done ? '✓' : '◎';
-      const chip    = document.createElement('button');
-      chip.className = 'exp-chip' + spcClass + (_ritualActiveExpId === exp.id ? ' selected' : '');
-      chip.dataset.expId = exp.id;
-      chip.innerHTML =
-        '<span class="chip-icon">' + icon + '</span>' +
-        '<span><span class="chip-label">' + esc(exp.text || 'Sin descripción') + '</span>' +
-        '<span class="chip-opp">' + esc(exp.opp) + '</span></span>';
-      chip.addEventListener('click', function() {
-        selectRitualExp(exp, experiments);
-      });
-      chips.appendChild(chip);
+      var col = getKanbanCol(exp);
+      cols[col].push(exp);
     });
 
-    // Si había uno seleccionado antes, re-seleccionarlo; si no, ocultar detalle
+    ['todo','wip','done'].forEach(function(colKey) {
+      var container = document.getElementById('cards-' + colKey);
+      if (!container) return;
+      cols[colKey].forEach(function(exp) {
+        container.appendChild(buildKanbanCard(exp, experiments));
+      });
+    });
+
+    updateKanbanCounts(cols.todo, cols.wip, cols.done);
+
+    // Re-seleccionar si había uno activo
     if (_ritualActiveExpId) {
-      const stillExists = experiments.find(function(e) { return e.id === _ritualActiveExpId; });
+      var stillExists = experiments.find(function(e) { return e.id === _ritualActiveExpId; });
       if (stillExists) selectRitualExp(stillExists, experiments);
       else { detail.classList.remove('visible'); _ritualActiveExpId = null; }
     } else {
@@ -4924,22 +5035,85 @@
     }
   }
 
+  function buildKanbanCard(exp, allExps) {
+    var saved = _ritualExpData[exp.id] || {};
+    var spc   = saved.spc_decision || '';
+    var card  = document.createElement('div');
+    card.className = 'kanban-card' + (_ritualActiveExpId === exp.id ? ' selected' : '');
+    card.dataset.expId = exp.id;
+    if (spc) card.dataset.spc = spc;
+    card.draggable = true;
+
+    var spcLabel = spc === 'stop' ? '⬛ STOP' : spc === 'pivot' ? '↻ PIVOT' : spc === 'continue' ? '→ CONT.' : '';
+    var spcCls   = spc ? ' spc-' + spc : '';
+
+    card.innerHTML =
+      '<div class="kanban-card-text">' + esc(exp.text || 'Sin descripción') + '</div>' +
+      '<div class="kanban-card-meta">' +
+        '<span class="kanban-card-opp">' + esc(exp.opp) + '</span>' +
+        (spcLabel ? '<span class="kanban-card-spc' + spcCls + '">' + spcLabel + '</span>' : '') +
+      '</div>';
+
+    card.addEventListener('click', function() { selectRitualExp(exp, allExps); });
+
+    // Drag & drop
+    card.addEventListener('dragstart', function(e) {
+      _draggingExpId = exp.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', function() {
+      card.classList.remove('dragging');
+      _draggingExpId = null;
+      document.querySelectorAll('.kanban-col').forEach(function(c) { c.classList.remove('drag-over'); });
+    });
+    return card;
+  }
+
+  function updateKanbanCounts(todo, wip, done) {
+    var ct = document.getElementById('cnt-todo');
+    var cw = document.getElementById('cnt-wip');
+    var cd = document.getElementById('cnt-done');
+    if (ct) ct.textContent = todo.length;
+    if (cw) cw.textContent = wip.length;
+    if (cd) cd.textContent = done.length;
+  }
+
+  function kanbanDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    var col = e.currentTarget;
+    col.classList.add('drag-over');
+  }
+
+  function kanbanDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function kanbanDrop(e, newCol) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (!_draggingExpId) return;
+    _kanbanStatus[_draggingExpId] = newCol;
+    // Si lo mueven a done y tenía spc, mantener. Si lo mueven a todo/wip, limpiar spc visual (no datos)
+    renderRitualExperiments();
+    debounceSave('ritual');
+  }
+
   function selectRitualExp(exp, allExps) {
     _ritualActiveExpId = exp.id;
 
-    // Actualizar chips
-    document.querySelectorAll('.exp-chip').forEach(function(c) {
+    // Actualizar cards seleccionadas
+    document.querySelectorAll('.kanban-card').forEach(function(c) {
       c.classList.toggle('selected', c.dataset.expId === exp.id);
     });
 
-    const detail   = document.getElementById('ritual-exp-detail');
-    const saved    = _ritualExpData[exp.id] || {};
+    const detail = document.getElementById('ritual-exp-detail');
+    const saved  = _ritualExpData[exp.id] || {};
 
-    // Header
     document.getElementById('detail-opp-tag').textContent  = exp.opp;
     document.getElementById('detail-exp-name').textContent = exp.text || 'Experimento sin descripción';
 
-    // Campos de texto — restaurar valores
     detail.querySelectorAll('.exp-field[data-key]').forEach(function(ta) {
       const k = ta.dataset.key;
       if (k !== 'spc_nota') ta.value = saved[k] || '';
@@ -4950,7 +5124,6 @@
       };
     });
 
-    // SPC buttons
     const spcRow  = document.getElementById('detail-spc-row');
     const spcNote = document.getElementById('detail-spc-note');
     const spcTa   = spcNote.querySelector('textarea');
@@ -4970,7 +5143,7 @@
       btn.addEventListener('click', function() {
         const isActive = btn.classList.contains(opt.cls);
         spcRow.querySelectorAll('.spc-btn').forEach(function(b) {
-          b.classList.remove('active-stop', 'active-pivot', 'active-continue');
+          b.classList.remove('active-stop','active-pivot','active-continue');
         });
         if (!_ritualExpData[exp.id]) _ritualExpData[exp.id] = {};
         if (!isActive) {
@@ -4978,24 +5151,20 @@
           _ritualExpData[exp.id].spc_decision = opt.key;
           spcTa.placeholder = opt.hint;
           spcNote.classList.add('visible');
+          // Auto-mover a done en kanban
+          if (!_kanbanStatus[exp.id] || _kanbanStatus[exp.id] === 'todo') {
+            _kanbanStatus[exp.id] = 'done';
+          }
         } else {
           _ritualExpData[exp.id].spc_decision = '';
           spcNote.classList.remove('visible');
         }
-        // Actualizar chip color
-        const chip = document.querySelector('.exp-chip[data-exp-id="' + exp.id + '"]');
-        if (chip) {
-          chip.classList.remove('spc-done-stop', 'spc-done-pivot', 'spc-done-continue');
-          if (!isActive) chip.classList.add('spc-done-' + opt.key);
-          const iconEl = chip.querySelector('.chip-icon');
-          if (iconEl) iconEl.textContent = !isActive ? (opt.key === 'stop' ? '⬛' : opt.key === 'pivot' ? '↻' : '→') : (exp.done ? '✓' : '◎');
-        }
+        renderRitualExperiments();
         autosave();
       });
       spcRow.appendChild(btn);
     });
 
-    // SPC note placeholder
     if (saved.spc_decision) {
       const matchOpt = SPC_OPTIONS.find(function(o) { return o.key === saved.spc_decision; });
       if (matchOpt) spcTa.placeholder = matchOpt.hint;
@@ -5008,7 +5177,7 @@
     detail.classList.add('visible');
   }
 
-  // Ritual week label
+    // Ritual week label
   function updateRitualWeekLabel() {
     const el = document.getElementById('ritual-week-label');
     if (el) el.textContent = 'Semana ' + getWeekNumber(new Date()) + ' · ' + new Date().toLocaleDateString('es-AR', { day:'numeric', month:'short', year:'numeric' });
@@ -6203,6 +6372,9 @@
   // Ritual
   window.renderRitualExperiments = renderRitualExperiments;
   window.updateRitualWeekLabel   = updateRitualWeekLabel;
+  window.kanbanDragOver          = kanbanDragOver;
+  window.kanbanDragLeave         = kanbanDragLeave;
+  window.kanbanDrop              = kanbanDrop;
 
   log('ok', 'Script cargado — todas las funciones expuestas al scope global');
 
