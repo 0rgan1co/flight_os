@@ -1502,6 +1502,305 @@
     padding: 6px 0 2px 0;
   }
 
+  /* ── SOLUCIONES como hipótesis ─────────────────────────── */
+  .ost-solution {
+    background: rgba(245,200,0,0.04);
+    border: 1px solid rgba(245,200,0,0.15);
+    border-left: 3px solid rgba(245,200,0,0.4);
+    border-radius: 4px;
+    margin: 8px 0 4px 0;
+    padding: 10px 12px 8px;
+  }
+  .ost-solution-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .ost-solution-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    background: rgba(245,200,0,0.1);
+    border: 1px solid rgba(245,200,0,0.2);
+    border-radius: 2px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .ost-solution-hypothesis {
+    flex: 1;
+    font-size: 13px;
+    color: var(--white);
+    outline: none;
+    min-height: 18px;
+    line-height: 1.5;
+  }
+  .ost-solution-hypothesis:empty::before {
+    content: 'Si hacemos [ACCIÓN] → obtenemos [RESULTADO]';
+    color: var(--gray-light);
+    font-style: italic;
+    pointer-events: none;
+  }
+  .ost-solution-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .ost-solution:hover .ost-solution-actions { opacity: 1; }
+  .ost-solution-experiments {
+    margin-top: 8px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(245,200,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ── EXPERIMENTOS como tarjetas ───────────────────────── */
+  .ost-experiment {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 3px;
+    padding: 7px 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .ost-experiment:hover { border-color: rgba(245,200,0,0.3); background: rgba(245,200,0,0.03); }
+  .ost-experiment-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #4A90D9;
+    background: rgba(74,144,217,0.1);
+    border: 1px solid rgba(74,144,217,0.2);
+    border-radius: 2px;
+    padding: 2px 5px;
+    flex-shrink: 0;
+  }
+  .ost-experiment-text {
+    flex: 1;
+    font-size: 12px;
+    color: var(--white);
+    outline: none;
+    min-height: 16px;
+  }
+  .ost-experiment-text:empty::before {
+    content: 'Describí el experimento...';
+    color: var(--gray-light);
+    font-style: italic;
+    pointer-events: none;
+  }
+  .ost-experiment-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .exp-status-pending  { color: var(--gray-light); background: rgba(255,255,255,0.05); }
+  .exp-status-running  { color: #4A90D9; background: rgba(74,144,217,0.1); }
+  .exp-status-done     { color: #2DC653; background: rgba(45,198,83,0.1); }
+  .exp-status-stopped  { color: var(--accent-red); background: rgba(230,57,70,0.1); }
+  .ost-experiment-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .ost-experiment:hover .ost-experiment-actions { opacity: 1; }
+  .exp-canvas-indicator {
+    font-size: 10px;
+    color: var(--gray-light);
+    flex-shrink: 0;
+  }
+  .exp-canvas-indicator.filled { color: var(--yellow); }
+
+  /* ── MODAL CANVAS EXPERIMENTO ─────────────────────────── */
+  .exp-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .exp-modal {
+    background: #111;
+    border: 1px solid rgba(245,200,0,0.2);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .exp-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    position: sticky;
+    top: 0;
+    background: #111;
+    z-index: 1;
+  }
+  .exp-modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--yellow);
+  }
+  .exp-modal-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-light);
+    margin-top: 2px;
+  }
+  .exp-modal-body {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .exp-canvas-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .exp-canvas-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .exp-canvas-label-num {
+    background: rgba(245,200,0,0.15);
+    border: 1px solid rgba(245,200,0,0.3);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+  .exp-canvas-hint {
+    font-size: 11px;
+    color: var(--gray-light);
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+  .exp-canvas-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 10px 12px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .exp-canvas-input:focus { border-color: rgba(245,200,0,0.4); }
+  .exp-canvas-input.single { min-height: unset; resize: none; height: 38px; padding: 9px 12px; }
+  .exp-hypothesis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .exp-hypothesis-box {
+    background: rgba(245,200,0,0.03);
+    border: 1px solid rgba(245,200,0,0.12);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .exp-hypothesis-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--yellow);
+  }
+  .exp-status-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .exp-status-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: var(--gray-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .exp-status-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .exp-status-btn.active-pending  { border-color: rgba(255,255,255,0.3); color: var(--white); background: rgba(255,255,255,0.06); }
+  .exp-status-btn.active-running  { border-color: #4A90D9; color: #4A90D9; background: rgba(74,144,217,0.1); }
+  .exp-status-btn.active-done     { border-color: #2DC653; color: #2DC653; background: rgba(45,198,83,0.1); }
+  .exp-status-btn.active-stopped  { border-color: var(--accent-red); color: var(--accent-red); background: rgba(230,57,70,0.08); }
+  .exp-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    position: sticky;
+    bottom: 0;
+    background: #111;
+  }
+  .exp-modal-save {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 9px 20px;
+    background: var(--yellow);
+    color: var(--black);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .exp-modal-cancel {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 9px 16px;
+    background: transparent;
+    color: var(--gray-light);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
   /* ── OUTCOMES ──────────────────────────────────────────── */
   .outcome-block {
     border: 1px solid rgba(255,255,255,0.07);
@@ -4028,6 +4327,10 @@
     });
   }
 
+  // ═══════════════════════════════════════════════════════════════
+  // MODULE: OST RENDER — Oportunidad → Solución (hipótesis) → Experimento (canvas)
+  // ═══════════════════════════════════════════════════════════════
+
   function buildOppEl(opp, oppIdx) {
     const wrap = document.createElement('div');
     wrap.className = 'ost-opportunity';
@@ -4036,11 +4339,10 @@
     const pClass = priorityClass(opp);
     const isCollapsed = opp.collapsed;
 
-    // Header — el toggle (▶) es el único que colapsa, resto editable
+    // ── Header ────────────────────────────────────────────────
     const header = document.createElement('div');
     header.className = 'ost-opp-header' + (isCollapsed ? ' collapsed' : '');
 
-    // Toggle arrow — zona exclusiva de collapse
     const toggle = document.createElement('div');
     toggle.className = 'ost-opp-toggle' + (isCollapsed ? '' : ' open');
     toggle.title = isCollapsed ? 'Expandir' : 'Colapsar';
@@ -4055,13 +4357,11 @@
       debounceSave('n3');
     });
 
-    // Priority dot
     const dot = document.createElement('div');
     dot.className = 'priority-dot ' + pClass;
     dot.title = 'Impacto / Esfuerzo';
     dot.textContent = pScore || '?';
 
-    // Meta: nombre + tags
     const meta = document.createElement('div');
     meta.className = 'ost-opp-meta';
 
@@ -4089,18 +4389,22 @@
     meta.appendChild(nameEl);
     meta.appendChild(tags);
 
-    // Actions
     const actions = document.createElement('div');
     actions.className = 'ost-opp-actions';
+
     const btnSol = document.createElement('button');
     btnSol.className = 'ost-btn-sm';
-    btnSol.textContent = '+ Sol.';
-    btnSol.addEventListener('click', function(e) { e.stopPropagation(); addOstNode('solution', opp.id); });
+    btnSol.textContent = '+ Solución';
+    btnSol.addEventListener('click', function(e) { e.stopPropagation(); addSolution(opp.id); });
+
     const btnDel = document.createElement('button');
     btnDel.className = 'ost-btn-sm danger';
     btnDel.textContent = '✕';
     btnDel.title = 'Eliminar oportunidad';
-    btnDel.addEventListener('click', function(e) { e.stopPropagation(); if (confirm('¿Eliminar esta oportunidad y todo su contenido?')) removeOpp(opp.id); });
+    btnDel.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (confirm('¿Eliminar esta oportunidad y todo su contenido?')) removeOpp(opp.id);
+    });
 
     actions.appendChild(btnSol);
     actions.appendChild(btnDel);
@@ -4110,43 +4414,159 @@
     header.appendChild(meta);
     header.appendChild(actions);
 
-    // Children container
+    // ── Children container ────────────────────────────────────
     const childrenEl = document.createElement('div');
     childrenEl.className = 'ost-children' + (isCollapsed ? ' hidden' : '');
     childrenEl.id = 'children-' + opp.id;
 
-    if (opp.children && opp.children.length) {
-      opp.children.forEach(function(child) { childrenEl.appendChild(buildChildEl(child, opp.id)); });
+    // Agrupar children: soluciones primero, con sus experimentos anidados
+    var solutions = (opp.children || []).filter(function(n) { return n.type === 'solution'; });
+    var loosExp   = (opp.children || []).filter(function(n) { return n.type === 'experiment'; });
+    var tasks     = (opp.children || []).filter(function(n) { return n.type === 'task'; });
+
+    solutions.forEach(function(sol) {
+      childrenEl.appendChild(buildSolutionEl(sol, opp.id));
+    });
+
+    // Experimentos sueltos (sin solución padre) — legacy o agregados directamente
+    if (loosExp.length) {
+      var looseWrap = document.createElement('div');
+      looseWrap.style.cssText = 'margin-top:6px; padding-left:4px; border-left:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; gap:4px;';
+      loosExp.forEach(function(exp) { looseWrap.appendChild(buildExperimentEl(exp, opp.id, null)); });
+      childrenEl.appendChild(looseWrap);
     }
 
-    // Add-child row
-    const addRow = document.createElement('div');
-    addRow.className = 'ost-add-child';
-    ['solution', 'experiment', 'task'].forEach(function(type) {
-      const labels = { solution: '+ Solución', experiment: '+ Experimento', task: '+ Tarea' };
-      const btn = document.createElement('button');
-      btn.className = 'ost-btn-sm';
-      btn.textContent = labels[type];
-      btn.addEventListener('click', function() { addOstNode(type, opp.id); });
-      addRow.appendChild(btn);
-    });
-    childrenEl.appendChild(addRow);
+    // Tareas sueltas
+    tasks.forEach(function(t) { childrenEl.appendChild(buildChildEl(t, opp.id)); });
 
     wrap.appendChild(header);
     wrap.appendChild(childrenEl);
     return wrap;
   }
 
+  // ── SOLUCIÓN — se muestra como hipótesis ─────────────────────
+  function buildSolutionEl(sol, oppId) {
+    const el = document.createElement('div');
+    el.className = 'ost-solution';
+    el.dataset.id = sol.id;
+
+    const hdr = document.createElement('div');
+    hdr.className = 'ost-solution-header';
+
+    const badge = document.createElement('span');
+    badge.className = 'ost-solution-badge';
+    badge.textContent = 'Hipótesis';
+
+    const textEl = document.createElement('div');
+    textEl.className = 'ost-solution-hypothesis';
+    textEl.contentEditable = 'true';
+    textEl.textContent = sol.text || '';
+    textEl.addEventListener('blur', function() { updateNodeText(oppId, sol.id, this.innerText); });
+    textEl.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.blur(); } });
+
+    const acts = document.createElement('div');
+    acts.className = 'ost-solution-actions';
+
+    const btnAddExp = document.createElement('button');
+    btnAddExp.className = 'ost-btn-sm';
+    btnAddExp.textContent = '+ Experimento';
+    btnAddExp.addEventListener('click', function(e) {
+      e.stopPropagation();
+      addExperimentUnder(oppId, sol.id);
+    });
+
+    const btnDel = document.createElement('button');
+    btnDel.className = 'ost-btn-sm danger';
+    btnDel.textContent = '✕';
+    btnDel.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (confirm('¿Eliminar esta hipótesis y sus experimentos?')) removeNode(oppId, sol.id);
+    });
+
+    acts.appendChild(btnAddExp);
+    acts.appendChild(btnDel);
+
+    hdr.appendChild(badge);
+    hdr.appendChild(textEl);
+    hdr.appendChild(acts);
+    el.appendChild(hdr);
+
+    // Experimentos de esta solución
+    var expWrap = document.createElement('div');
+    expWrap.className = 'ost-solution-experiments';
+    expWrap.id = 'exp-of-' + sol.id;
+
+    (sol.children || []).filter(function(n) { return n.type === 'experiment'; })
+      .forEach(function(exp) { expWrap.appendChild(buildExperimentEl(exp, oppId, sol.id)); });
+
+    el.appendChild(expWrap);
+    return el;
+  }
+
+  // ── EXPERIMENTO — tarjeta con canvas ─────────────────────────
+  function buildExperimentEl(exp, oppId, solId) {
+    const el = document.createElement('div');
+    el.className = 'ost-experiment';
+    el.dataset.id = exp.id;
+    el.dataset.oppId = oppId;
+    if (solId) el.dataset.solId = solId;
+
+    const badge = document.createElement('span');
+    badge.className = 'ost-experiment-badge';
+    badge.textContent = 'Exp';
+
+    const textEl = document.createElement('div');
+    textEl.className = 'ost-experiment-text';
+    textEl.contentEditable = 'true';
+    textEl.textContent = exp.text || '';
+    textEl.addEventListener('blur', function() { updateNodeText(oppId, exp.id, this.innerText); });
+    textEl.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.blur(); } });
+
+    // Status badge
+    const statusMap = { pending: '⬜ Pendiente', running: '▶ Corriendo', done: '✓ Completo', stopped: '⬛ Detenido' };
+    const statusCls = { pending: 'exp-status-pending', running: 'exp-status-running', done: 'exp-status-done', stopped: 'exp-status-stopped' };
+    const status = exp.status || 'pending';
+    const statusEl = document.createElement('span');
+    statusEl.className = 'ost-experiment-status ' + (statusCls[status] || 'exp-status-pending');
+    statusEl.textContent = statusMap[status] || '⬜ Pendiente';
+
+    // Canvas indicator
+    const hasCanvas = exp.canvas && (exp.canvas.objetivo || exp.canvas.h1 || exp.canvas.acciones);
+    const canvasIcon = document.createElement('span');
+    canvasIcon.className = 'exp-canvas-indicator' + (hasCanvas ? ' filled' : '');
+    canvasIcon.title = hasCanvas ? 'Canvas completado — click para editar' : 'Canvas vacío — click para completar';
+    canvasIcon.textContent = hasCanvas ? '📋' : '📋';
+
+    // Abrir canvas al hacer click en el ícono o en el texto
+    canvasIcon.addEventListener('click', function(e) { e.stopPropagation(); openExpCanvas(oppId, exp.id); });
+    el.addEventListener('click', function(e) {
+      if (e.target === textEl || e.target.closest('.ost-experiment-actions')) return;
+      openExpCanvas(oppId, exp.id);
+    });
+
+    const acts = document.createElement('div');
+    acts.className = 'ost-experiment-actions';
+
+    const btnDel = document.createElement('button');
+    btnDel.className = 'ost-btn-sm danger';
+    btnDel.textContent = '✕';
+    btnDel.addEventListener('click', function(e) { e.stopPropagation(); removeNode(oppId, exp.id); });
+    acts.appendChild(btnDel);
+
+    el.appendChild(badge);
+    el.appendChild(textEl);
+    el.appendChild(statusEl);
+    el.appendChild(canvasIcon);
+    el.appendChild(acts);
+    return el;
+  }
+
+  // ── TAREA (legacy / node genérico) ───────────────────────────
   function buildChildEl(node, oppId) {
     const el = document.createElement('div');
     el.className = 'ost-node';
     el.dataset.id = node.id;
     el.dataset.oppId = oppId;
-    el.draggable = true;
-
-    const dragHandle = document.createElement('div');
-    dragHandle.className = 'drag-handle';
-    dragHandle.textContent = '⋮⋮';
 
     const typeBadge = document.createElement('span');
     typeBadge.className = 'ost-node-type type-' + node.type;
@@ -4162,28 +4582,6 @@
 
     const actionsEl = document.createElement('div');
     actionsEl.className = 'ost-node-actions';
-    if (node.type === 'solution') {
-      const btn = document.createElement('button');
-      btn.className = 'ost-btn-sm';
-      btn.textContent = '+ Exp';
-      btn.addEventListener('click', function() { addChildUnder(oppId, node.id, 'experiment'); });
-      actionsEl.appendChild(btn);
-    }
-    if (node.type === 'experiment') {
-      const btn = document.createElement('button');
-      btn.className = 'ost-btn-sm';
-      btn.textContent = '+ Tarea';
-      btn.addEventListener('click', function() { addChildUnder(oppId, node.id, 'task'); });
-      actionsEl.appendChild(btn);
-    }
-    const btnDel = document.createElement('button');
-    btnDel.className = 'ost-btn-sm danger';
-    btnDel.textContent = '✕';
-    btnDel.addEventListener('click', function() { removeNode(oppId, node.id); });
-    actionsEl.appendChild(btnDel);
-
-    el.appendChild(dragHandle);
-    el.appendChild(typeBadge);
 
     if (node.type === 'task') {
       const check = document.createElement('div');
@@ -4192,34 +4590,21 @@
       el.appendChild(check);
     }
 
+    const btnDel = document.createElement('button');
+    btnDel.className = 'ost-btn-sm danger';
+    btnDel.textContent = '✕';
+    btnDel.addEventListener('click', function() { removeNode(oppId, node.id); });
+    actionsEl.appendChild(btnDel);
+
+    el.appendChild(typeBadge);
     el.appendChild(textEl);
     el.appendChild(actionsEl);
-
-    // Drag events
-    el.addEventListener('dragstart', function(e) {
-      e.dataTransfer.setData('text/plain', node.id + '|' + oppId);
-      el.classList.add('dragging');
-    });
-    el.addEventListener('dragend', function() { el.classList.remove('dragging'); });
-    el.addEventListener('dragover', function(e) { e.preventDefault(); el.classList.add('drag-over'); });
-    el.addEventListener('dragleave', function() { el.classList.remove('drag-over'); });
-    el.addEventListener('drop', function(e) {
-      e.preventDefault(); el.classList.remove('drag-over');
-      const parts = e.dataTransfer.getData('text/plain').split('|');
-      reorderNode(parts[1], parts[0], oppId, node.id);
-    });
-
-    // Nested children (experiments under solutions, tasks under experiments)
-    if (node.children && node.children.length) {
-      const nestedWrap = document.createElement('div');
-      nestedWrap.className = 'ost-children';
-      nestedWrap.style.marginTop = '6px';
-      node.children.forEach(function(child) { nestedWrap.appendChild(buildChildEl(child, oppId)); });
-      el.appendChild(nestedWrap);
-    }
-
     return el;
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // MODULE: OST MUTATIONS
+  // ═══════════════════════════════════════════════════════════════
 
   function addOstNode(type, oppId) {
     if (type === 'opportunity') {
@@ -4228,8 +4613,32 @@
     } else {
       const opp = ostData.opportunities.find(function(o) { return o.id === oppId; });
       if (!opp) return;
-      opp.children.push({ id: ostId(), type: type, text: '', done: false, children: [] });
+      opp.children.push({ id: ostId(), type: type, text: '', done: false, status: 'pending', canvas: {}, children: [] });
     }
+    renderOst(); debounceSave('n3');
+  }
+
+  function addSolution(oppId) {
+    const opp = ostData.opportunities.find(function(o) { return o.id === oppId; });
+    if (!opp) return;
+    opp.children.push({ id: ostId(), type: 'solution', text: '', done: false, children: [] });
+    renderOst(); debounceSave('n3');
+  }
+
+  function addExperimentUnder(oppId, solId) {
+    const opp = ostData.opportunities.find(function(o) { return o.id === oppId; });
+    if (!opp) return;
+    function findAndAdd(nodes) {
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === solId) {
+          if (!nodes[i].children) nodes[i].children = [];
+          nodes[i].children.push({ id: ostId(), type: 'experiment', text: '', done: false, status: 'pending', canvas: {}, children: [] });
+          return true;
+        }
+        if (nodes[i].children && findAndAdd(nodes[i].children)) return true;
+      }
+    }
+    findAndAdd(opp.children);
     renderOst(); debounceSave('n3');
   }
 
@@ -4238,12 +4647,94 @@
     if (!opp) return;
     function findAndAdd(nodes) {
       for (var i=0; i<nodes.length; i++) {
-        if (nodes[i].id === parentNodeId) { if (!nodes[i].children) nodes[i].children = []; nodes[i].children.push({ id: ostId(), type: type, text: '', done: false, children: [] }); return true; }
+        if (nodes[i].id === parentNodeId) { if (!nodes[i].children) nodes[i].children = []; nodes[i].children.push({ id: ostId(), type: type, text: '', done: false, status: 'pending', canvas: {}, children: [] }); return true; }
         if (nodes[i].children && findAndAdd(nodes[i].children)) return true;
       }
     }
     findAndAdd(opp.children); renderOst(); debounceSave('n3');
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // MODULE: CANVAS DE EXPERIMENTO — modal de 6 dimensiones
+  // ═══════════════════════════════════════════════════════════════
+
+  var _expCanvasContext = { oppId: null, expId: null };
+  var _expCanvasStatus = 'pending';
+
+  function openExpCanvas(oppId, expId) {
+    var exp = findNode(oppId, expId);
+    if (!exp) return;
+    _expCanvasContext = { oppId: oppId, expId: expId };
+    var c = exp.canvas || {};
+    document.getElementById('ec-objetivo').value   = c.objetivo   || '';
+    document.getElementById('ec-h1').value         = c.h1         || '';
+    document.getElementById('ec-h2').value         = c.h2         || '';
+    document.getElementById('ec-quienes').value    = c.quienes    || '';
+    document.getElementById('ec-acciones').value   = c.acciones   || '';
+    document.getElementById('ec-fechas').value     = c.fechas     || '';
+    document.getElementById('ec-resultados').value = c.resultados || '';
+    _expCanvasStatus = exp.status || 'pending';
+    updateExpStatusBtns();
+    var subtitle = exp.text ? (exp.text.length > 60 ? exp.text.slice(0, 57) + '...' : exp.text) : 'Nuevo experimento';
+    document.getElementById('exp-modal-subtitle').textContent = subtitle;
+    document.getElementById('exp-canvas-modal').style.display = 'flex';
+  }
+
+  function closeExpCanvas() {
+    document.getElementById('exp-canvas-modal').style.display = 'none';
+    _expCanvasContext = { oppId: null, expId: null };
+  }
+
+  function setExpStatus(status) {
+    _expCanvasStatus = status;
+    updateExpStatusBtns();
+  }
+
+  function updateExpStatusBtns() {
+    document.querySelectorAll('.exp-status-btn').forEach(function(btn) {
+      btn.className = 'exp-status-btn' + (btn.dataset.status === _expCanvasStatus ? ' active-' + _expCanvasStatus : '');
+    });
+  }
+
+  function saveExpCanvas() {
+    if (!_expCanvasContext.oppId || !_expCanvasContext.expId) return;
+    var exp = findNode(_expCanvasContext.oppId, _expCanvasContext.expId);
+    if (!exp) return;
+    exp.canvas = {
+      objetivo:   document.getElementById('ec-objetivo').value.trim(),
+      h1:         document.getElementById('ec-h1').value.trim(),
+      h2:         document.getElementById('ec-h2').value.trim(),
+      quienes:    document.getElementById('ec-quienes').value.trim(),
+      acciones:   document.getElementById('ec-acciones').value.trim(),
+      fechas:     document.getElementById('ec-fechas').value.trim(),
+      resultados: document.getElementById('ec-resultados').value.trim()
+    };
+    exp.status = _expCanvasStatus;
+    closeExpCanvas();
+    renderOst();
+    debounceSave('n3');
+    showToast('✓ Canvas guardado');
+  }
+
+  // Helper: encontrar un nodo en cualquier oportunidad
+  function findNode(oppId, nodeId) {
+    var opp = ostData.opportunities.find(function(o) { return o.id === oppId; });
+    if (!opp) return null;
+    function search(nodes) {
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === nodeId) return nodes[i];
+        if (nodes[i].children) { var found = search(nodes[i].children); if (found) return found; }
+      }
+      return null;
+    }
+    return search(opp.children);
+  }
+
+  // Exponer funciones del canvas al scope global
+  window.openExpCanvas   = openExpCanvas;
+  window.closeExpCanvas  = closeExpCanvas;
+  window.setExpStatus    = setExpStatus;
+  window.saveExpCanvas   = saveExpCanvas;
 
   function removeOpp(oppId) {
     ostData.opportunities = ostData.opportunities.filter(function(o) { return o.id !== oppId; });
@@ -5717,6 +6208,87 @@
 
 </script>
 <!-- ══════════════════ EXPORT MODAL ══════════════════ -->
+<!-- ══════════════════ MODAL CANVAS EXPERIMENTO ══════════════════ -->
+<div id="exp-canvas-modal" class="exp-modal-backdrop" style="display:none;" onclick="if(event.target===this)closeExpCanvas()">
+  <div class="exp-modal">
+    <div class="exp-modal-header">
+      <div>
+        <div class="exp-modal-title">CANVAS — EXPERIMENTO SEMILLA</div>
+        <div class="exp-modal-subtitle" id="exp-modal-subtitle">6 dimensiones · Doble hipótesis</div>
+      </div>
+      <button onclick="closeExpCanvas()" style="background:transparent;border:none;color:var(--gray-light);font-size:20px;cursor:pointer;padding:4px 8px;">✕</button>
+    </div>
+    <div class="exp-modal-body">
+
+      <!-- 1. OBJETIVO -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">1</span> OBJETIVO</div>
+        <div class="exp-canvas-hint">¿Para qué proponemos este experimento? ¿Qué queremos aprender o validar?</div>
+        <textarea class="exp-canvas-input" id="ec-objetivo" placeholder="Validar que... / Aprender si... / Confirmar que..."></textarea>
+      </div>
+
+      <!-- 2. HIPÓTESIS -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">2</span> HIPÓTESIS DOBLE</div>
+        <div class="exp-hypothesis-grid">
+          <div class="exp-hypothesis-box">
+            <div class="exp-hypothesis-tag">H1 — Output → Outcome (fácil de medir)</div>
+            <textarea class="exp-canvas-input" id="ec-h1" placeholder="Creemos que si hacemos [ACCIÓN] obtendremos [CAMBIO DE COMPORTAMIENTO]" style="min-height:80px;"></textarea>
+          </div>
+          <div class="exp-hypothesis-box">
+            <div class="exp-hypothesis-tag">H2 — Outcome → Impacto (difícil de medir)</div>
+            <textarea class="exp-canvas-input" id="ec-h2" placeholder="Creemos que si logramos [OUTCOME] obtendremos [IMPACTO DE NEGOCIO]" style="min-height:80px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. QUIÉNES -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">3</span> QUIÉNES</div>
+        <div class="exp-canvas-hint">Impulsores (diseñan y ejecutan) · Involucrados (participan) · Impactados (reciben los efectos)</div>
+        <textarea class="exp-canvas-input" id="ec-quienes" placeholder="Impulsores: ...\nInvolucrados: ...\nImpactados: ..."></textarea>
+      </div>
+
+      <!-- 4. ACCIONES -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">4</span> ACCIONES</div>
+        <div class="exp-canvas-hint">¿Qué, cómo, cuándo, dónde, con quiénes? ¿Cuál es el primer próximo paso?</div>
+        <textarea class="exp-canvas-input" id="ec-acciones" placeholder="1. Primer paso: ...\n2. ...\n3. ..."></textarea>
+      </div>
+
+      <!-- 5. FECHAS -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">5</span> FECHAS</div>
+        <div class="exp-canvas-hint">Inicio · Fin · Ciclos de revisión</div>
+        <textarea class="exp-canvas-input" id="ec-fechas" placeholder="Inicio: ...\nFin: ...\nRevisiones: ..."></textarea>
+      </div>
+
+      <!-- 6. RESULTADOS -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">6</span> RESULTADOS</div>
+        <div class="exp-canvas-hint">¿Qué queremos lograr? ¿Cómo lo medimos? ¿Cuándo sabremos que fue exitoso?</div>
+        <textarea class="exp-canvas-input" id="ec-resultados" placeholder="Métrica de éxito: ...\nCriterio de validación de H1: ...\nCriterio de validación de H2: ..."></textarea>
+      </div>
+
+      <!-- ESTADO -->
+      <div class="exp-canvas-section">
+        <div class="exp-canvas-label"><span class="exp-canvas-label-num">↗</span> ESTADO</div>
+        <div class="exp-status-row">
+          <button class="exp-status-btn" data-status="pending"  onclick="setExpStatus('pending')">⬜ Pendiente</button>
+          <button class="exp-status-btn" data-status="running"  onclick="setExpStatus('running')">▶ Corriendo</button>
+          <button class="exp-status-btn" data-status="done"     onclick="setExpStatus('done')">✓ Completado</button>
+          <button class="exp-status-btn" data-status="stopped"  onclick="setExpStatus('stopped')">⬛ Detenido</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="exp-modal-footer">
+      <button class="exp-modal-cancel" onclick="closeExpCanvas()">Cancelar</button>
+      <button class="exp-modal-save" onclick="saveExpCanvas()">Guardar experimento</button>
+    </div>
+  </div>
+</div>
+
 <div id="export-modal" class="export-overlay" style="display:none;" onclick="if(event.target===this)closeExportModal()">
   <div class="export-modal">
     <div class="export-modal-header">
