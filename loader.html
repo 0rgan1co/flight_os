@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>FlightOS — Cargador de datos</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace, sans-serif; background: #0f0f0f; color: #eee; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+  .card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 32px; max-width: 560px; width: 100%; }
+  h1 { font-size: 18px; color: #f5c800; margin-bottom: 8px; }
+  p  { font-size: 13px; color: #888; margin-bottom: 24px; line-height: 1.6; }
+  button { width: 100%; padding: 14px; background: #f5c800; color: #0f0f0f; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+  button:hover { background: #ffd700; }
+  button:disabled { background: #555; color: #888; cursor: not-allowed; }
+  #log { margin-top: 20px; font-size: 12px; line-height: 1.8; color: #aaa; white-space: pre-wrap; }
+  .ok  { color: #4caf50; }
+  .err { color: #f44336; }
+  .done { color: #f5c800; font-weight: bold; margin-top: 12px; display: block; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>⚡ FlightOS — Cargador de datos v2</h1>
+  <p>Carga N1, N2 y N3 directamente a Supabase en el formato correcto.<br>
+  Después abrí el dashboard y recargá la página.</p>
+  <button onclick="runLoad()" id="btn">Cargar datos al dashboard</button>
+  <div id="log"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://tsckgbjxavfyrvyjvbix.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY2tnYmp4YXZmeXJ2eWp2Yml4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMzQzNDcsImV4cCI6MjA4ODkxMDM0N30.HrEq6y-OiFDpndsJrXEjCGDOfFgic_o4S9QDLWJes88';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── N1 ────────────────────────────────────────────────────────────────
+const n1 = {
+  vision: `Construir un sistema de vida antifrágil donde el trabajo genera $20K MRR desde tres fuentes independientes — fees como socio de unidades de negocio, productos digitales y servicios de consultoría/inversión en startups de base científico-tecnológica. El sistema libera tiempo real: para ir profundo con socios y equipos elegidos, para estar con Luca y Lupe, y para construir con Anto una vida de conexión, disfrute y experiencias compartidas — incluyendo viajes frecuentes y la capacidad de tomar riesgo en lo que vale la pena.`,
+  nsm: "Fuentes de ingreso activas",
+  nsm_current: "1",
+  nsm_target: "3",
+  input_metrics: [
+    { name: "Friendraising activo (cafecitos, almuerzos, mensajes, eventos)", current: "", target: "5 touchpoints/sem + 1 evento/mes" },
+    { name: "Horas en producto (Voces.ai u otro ai-first)", current: "", target: "5 hs/semana" },
+    { name: "Experimentos de negocio lanzados", current: "", target: "1/mes" },
+    { name: "Conversaciones publicadas (newsletter tipo Pulso)", current: "", target: "1 pieza/semana" }
+  ],
+  horizons: [],
+  outcomes: [
+    { id: "oc1", name: "Alcanzar $20K MRR con 3 fuentes independientes", metrica: "MRR total y distribución por fuente (servicios / productos / fees)", plazo: "12 meses", hipotesis: "Si desacoplamos tiempo y dinero construyendo productos y participaciones como socio, el ingreso escala sin escalar horas" },
+    { id: "oc2", name: "Producto digital ai-first con clientes activos", metrica: "5 a 10 clientes activos que usan y recomiendan (Voces.ai, GPS Process Discovery u otro)", plazo: "6 meses", hipotesis: "Los productos ai-first construidos con personas que admiramos generan tracción porque combinan credibilidad técnica y confianza" },
+    { id: "oc3", name: "Primer cliente y primera historia de orgullo en México", metrica: "1 cliente cerrado + 1 aprendizaje documentado con Gaël u otro socio mexicano", plazo: "6 meses", hipotesis: "Entrar al ecosistema mexicano con socios que ya tienen negocios de $20MM ARR multiplica superficie de juego y velocidad de acceso" }
+  ]
+};
+
+// ── N2 ────────────────────────────────────────────────────────────────
+const n2 = {
+  initiatives: [
+    { name: "Ai.ChangeLab con GCBA (contrato anual SSCDI)", objetivo: "Contrato anual activo", metric: "MRR", estado: "crecimiento", trampa: "" },
+    { name: "GPS Process Discovery con Rick", objetivo: "Producto con clientes activos", metric: "Clientes activos", estado: "brote", trampa: "" },
+    { name: "Voces.ai con GCBA con Thomas", objetivo: "Producto con clientes activos", metric: "Clientes activos", estado: "brote", trampa: "" },
+    { name: "CREAHub — Modelo de sostenibilidad", objetivo: "Modelo probado de sostenibilidad", metric: "Ingresos independientes", estado: "brote", trampa: "" },
+    { name: "Congreso CREA Litoral", objetivo: "Evento ejecutado con impacto", metric: "Asistentes / contratos", estado: "brote", trampa: "" },
+    { name: "CREA — Desarrollo institucional", objetivo: "Nueva unidad de negocio", metric: "Fuentes de ingreso", estado: "semilla", trampa: "" },
+    { name: "Modelo Zentauro / Arneses con Gaël", objetivo: "Propuesta validada con founders", metric: "Clientes / feedbacks", estado: "semilla", trampa: "" },
+    { name: "Viaje a Brasil con Guido", objetivo: "Exploración de ecosistema", metric: "Conexiones / oportunidades", estado: "semilla", trampa: "" },
+    { name: "Crear AC — Curiosidad Conciencia", objetivo: "Estructura legal activa", metric: "Iniciativas canalizadas", estado: "semilla", trampa: "" },
+    { name: "Red de Innovación Local (Popi / Flor)", objetivo: "Red activa y generando valor", metric: "Proyectos colaborativos", estado: "semilla", trampa: "" },
+    { name: "Liqueed", objetivo: "—", metric: "—", estado: "compost", trampa: "" },
+    { name: "Kubadili", objetivo: "—", metric: "—", estado: "compost", trampa: "pobreza" },
+    { name: "7 Piezas", objetivo: "—", metric: "—", estado: "compost", trampa: "rigidez" }
+  ],
+  pobreza_diagnostico: "Kubadili: tengo claridad sobre la oportunidad pero no encuentro cómo activarla — falta el primer paso concreto o el socio correcto.",
+  rigidez_diagnostico: "7 Piezas: el modelo no se pudo reinventar a tiempo. Seguimos ejecutando por inercia cuando la señal era parar y pivotear."
+};
+
+// ── N3 — formato correcto con children[] ─────────────────────────────
+const n3 = {
+  ost: {
+    outcomeId: "oc1",
+    opportunities: [
+      {
+        id: "op1",
+        name: "CEOs y founders que creen que AI puede mejorar su eficiencia operativa pero no saben cómo convertir esa aspiración en resultados concretos",
+        impactScore: null, effortScore: null, initiativeId: "", collapsed: false,
+        children: [
+          { id: "sol1", type: "solution",    text: "Modelo Zentauro / Arneses AI — acompañamiento para convertir aspiraciones en experimentos ejecutables", done: false, children: [] },
+          { id: "exp1", type: "experiment",  text: "Feedback temprano de landing de Modelo Zentauro/Arneses AI con 5 founders o CEOs", done: false, children: [] },
+          { id: "exp2", type: "experiment",  text: "Armar 1 grupo de aprendizaje entre pares (ClimaTech o grupo CREAHub México)", done: false, children: [] }
+        ]
+      },
+      {
+        id: "op2",
+        name: "Iniciativas que necesitan sobrevivir y repensar su modelo de sostenibilidad pero no tienen una estrategia clara para mantenerse en el juego",
+        impactScore: null, effortScore: null, initiativeId: "", collapsed: false,
+        children: [
+          { id: "sol2", type: "solution",    text: "Propuesta de acompañamiento con foco en grants, donaciones y modelos híbridos de sostenibilidad", done: false, children: [] },
+          { id: "exp3", type: "experiment",  text: "Propuesta de acompañamiento con grants/donaciones para EPICOS, El Pantano, CREAHub o DialogoConcienciaCompasivo", done: false, children: [] }
+        ]
+      },
+      {
+        id: "op3",
+        name: "La velocidad de los negocios avanza al ritmo de la confianza. Fondos que necesitan mejorar la relación con sus startups de base científico-tecnológica para ayudarles a crecer",
+        impactScore: null, effortScore: null, initiativeId: "", collapsed: false,
+        children: [
+          { id: "sol3", type: "solution",    text: "Construir confianza con el ecosistema de inversión y startups científico-tecnológicas mediante presencia activa", done: false, children: [] },
+          { id: "exp4", type: "experiment",  text: "Participar del retiro ClimaTech", done: false, children: [] },
+          { id: "exp5", type: "experiment",  text: "Vincularme con la comunidad GridX de startups de base científico-tecnológica", done: false, children: [] },
+          { id: "exp6", type: "experiment",  text: "Participar en caminata organizada por MrPink", done: false, children: [] }
+        ]
+      }
+    ]
+  },
+  review: {}
+};
+
+function log(msg, type) {
+  const el = document.getElementById('log');
+  const span = document.createElement('span');
+  span.className = type || '';
+  span.textContent = msg + '\n';
+  el.appendChild(span);
+}
+
+async function upsert(key, value) {
+  const { error } = await sb.from('data_store').upsert({ key, value: JSON.stringify(value) });
+  if (error) { log('✗ ' + key + ': ' + error.message, 'err'); return false; }
+  log('✓ ' + key + ' guardado correctamente', 'ok');
+  return true;
+}
+
+async function runLoad() {
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = 'Cargando...';
+  document.getElementById('log').innerHTML = '';
+  log('Conectando a Supabase...\n');
+  const ok1 = await upsert('flightos_n1', n1);
+  const ok2 = await upsert('flightos_n2', n2);
+  const ok3 = await upsert('flightos_n3', n3);
+  if (ok1 && ok2 && ok3) {
+    log('\n¡Listo! Abrí el dashboard y recargá la página.', 'done');
+    btn.textContent = '✓ Datos cargados';
+  } else {
+    log('\nAlgo falló. Revisá los errores arriba.', 'err');
+    btn.disabled = false;
+    btn.textContent = 'Reintentar';
+  }
+}
+</script>
+</body>
+</html>

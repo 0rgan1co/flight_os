@@ -3477,12 +3477,45 @@
     if (cards[1] && v.rigidez_diagnostico) cards[1].value = v.rigidez_diagnostico;
   }
 
+  // ── OST FORMAT MIGRATION ─────────────────────────────────────────
+  // Normaliza datos guardados con formato legacy (description/solutions/experiments)
+  // al formato interno (name/children) que usa el dashboard
+  function migrateOstData(ost) {
+    if (!ost || !ost.opportunities) return ost;
+    ost.opportunities = ost.opportunities.map(function(opp) {
+      // Si ya tiene el formato correcto, no tocar
+      if (Array.isArray(opp.children)) return opp;
+      // Migrar formato legacy: description → name, solutions[] → children[]
+      var children = [];
+      if (Array.isArray(opp.solutions)) {
+        opp.solutions.forEach(function(sol) {
+          children.push({ id: sol.id || ostId(), type: 'solution', text: sol.description || sol.text || '', done: false, children: [] });
+          if (Array.isArray(sol.experiments)) {
+            sol.experiments.forEach(function(exp) {
+              children.push({ id: exp.id || ostId(), type: 'experiment', text: exp.description || exp.text || '', done: false, children: [] });
+            });
+          }
+        });
+      }
+      return {
+        id: opp.id || ostId(),
+        name: opp.description || opp.name || '',
+        impactScore: opp.impactScore || null,
+        effortScore: opp.effortScore || null,
+        initiativeId: opp.initiativeId || '',
+        collapsed: opp.collapsed || false,
+        children: children
+      };
+    });
+    return ost;
+  }
+
   function restoreN3(v) {
     if (!v) return;
     // Restore review data first so ostOutcomeChanged can pick it up
     if (v.review) _n3ReviewData = v.review;
     if (v.ost) {
-      ostData = v.ost;
+      ostData = migrateOstData(v.ost);
       if (typeof renderOst === 'function') renderOst();
       // Defer picklist + ostOutcomeChanged until N1 fields are in DOM
       if (ostData.outcomeId) {
